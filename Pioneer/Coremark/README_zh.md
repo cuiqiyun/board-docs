@@ -3,7 +3,7 @@ sys: revyos
 sys_ver: "20251030"
 sys_var: null
 
-status: good
+status: basics
 last_update: 2026-04-19
 
 model: Milk-V Pioneer
