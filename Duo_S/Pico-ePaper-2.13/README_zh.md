@@ -5,6 +5,9 @@ sys_var: v1
 
 status: peripheral
 last_update: 2026-04-06
+
+model: Milk-V Duo S
+profile: Pico-ePaper-2.13
 ---
 
 # RuyiSDK 外设示例

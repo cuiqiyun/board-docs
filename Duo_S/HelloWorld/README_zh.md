@@ -5,18 +5,46 @@ sys_var: v1
 
 status: basics
 last_update: 2026-04-06
+
+model: Milk-V Duo S
+profile: Hello World
 ---
 
 # RuyiSDK 基础示例
+
+可直接在开发板上进行编译和运行的示例，适合初学者快速上手。
+安装依赖包
+
+```
+sudo apt update; sudo apt install -y wget tar zstd xz-utils git build-essential
+```
+
+安装ruyi包管理器
+
+```
+wget https://fast-mirror.isrc.ac.cn/ruyisdk/ruyi/tags/0.47.0/ruyi.riscv64
+
+chmod +x ruyi-0.47.0.riscv64
+
+sudo cp -v ruyi-0.47.0.riscv64 /usr/local/bin/ruyi
+```
+
+安装GCC和LLVM工具链
+
+```
+ruyi update
+
+ruyi install gnu-plct llvm-plct
+```
 
 ## Hello World (GCC) 
 
 创建并激活 ruyi 虚拟环境（GCC）
 
 ```
-ruyi venv -t toolchain/gnu-plct milkv-duo venv-gnu-plct-duo
+ruyi venv -t toolchain/gnu-plct manual venv-gnu-plct
 
-. ~/venv-gnu-plct-duo/bin/ruyi-activate
+. ~/venv-gnu-plct/bin/ruyi-activate
 ```
 
 验证 GCC 版本
@@ -28,58 +56,32 @@ riscv64-plct-linux-gnu-gcc -v
 编译 Hello World（GCC）
 
 ```
-cat << EOF > hello.c
-
+cat > hello.c << 'EOF'
 #include <stdio.h>
 
-int main() {
-
-printf("Hello, World!\n");
-
-return 0;
-
+int main() {
+    printf("Hello, World!\n");
+    return 0;
 }
-
 EOF
 
-riscv64-plct-linux-gnu-gcc hello.c -static -o hello-gcc
+riscv64-plct-linux-gnu-gcc hello.c -o hello-gcc
 ```
 
-正常情况下，终端会看到类似如下输出：
+正常情况下，终端会看到类似如下输出:
 
 ```
 debian@duos-1cae:~$ source venv-gnu-plct/bin/ruyi-activate
 <an@duos-1cae:~$ riscv64-plct-linux-gnu-gcc hello.c -o hello-gcc
 «Ruyi venv-gnu-plct» debian@duos-1cae:~$ 
 ```
-
-
-将 GCC 构建的二进制传输至开发板
+运行 Hello World（GCC）
 
 ```
-scp ../hello-gcc root@192.168.42.1:~
-```
-
-返回上级目录并退出 ruyi GCC 虚拟环境
-
-```
-cd ..; ruyi-deactivate
-```
-
-SSH 连接到开发板并执行编译好的二进制
-
-```
-ssh root@192.168.42.1
-
-#如提示Host key verification failed：
-
-#打开当前用户目录下的 .ssh/known_hosts目录，删除192.168.42.1对应行
-
-#登录密码为milkv，提示Are you sure you want to continue connecting时输入yes回车即可
-
 ./hello-gcc
-
 ```
+
+
 正常情况下，终端会看到类似如下输出：
 
 ```
@@ -90,14 +92,19 @@ Hello, World!
 «Ruyi venv-gnu-plct» debian@duos-1cae:~$ 
 ```
 
+返回上级目录并退出 ruyi GCC 虚拟环境
+
+```
+cd ..; ruyi-deactivate
+```
 ## Hello World (LLVM) 
 
 创建并激活 ruyi 虚拟环境（LLVM）
 
 ```
-ruyi venv -t toolchain/llvm-plct manual --sysroot-from gnu-plct venv-llvm-plct-duo
+ruyi venv -t toolchain/llvm-plct manual --sysroot-from gnu-plct venv-llvm-plct
 
-. ~/venv-llvm-plct-duo/bin/ruyi-activate
+. ~/venv-llvm-plct/bin/ruyi-activate
 ```
 
 验证 LLVM 版本
@@ -106,7 +113,7 @@ ruyi venv -t toolchain/llvm-plct manual --sysroot-from gnu-plct venv-llvm-plct-
 clang -v
 ```
 
-编译并运行 Hello World（LLVM）
+编译 Hello World（LLVM）
 
 ```
 clang hello.c -static -o hello-llvm
@@ -119,38 +126,21 @@ debian@duos-1cae:~$ source venv-llvm-plct/bin/ruyi-activate
 «Ruyi venv-llvm-plct» debian@duos-1cae:~$ clang hello.c -o hello-llvm
 «Ruyi venv-llvm-plct» debian@duos-1cae:~$ 
 ```
-
-
-将 LLVM 构建的二进制传输至开发板
+运行 Hello World（LLVM）
 
 ```
-scp ../hello-llvm root@192.168.42.1:~
-```
-
-返回上级目录并退出 ruyi LLVM 虚拟环境
-
-```
-cd ..; ruyi-deactivate
-```
-
-SSH 连接到开发板并执行编译好的二进制
-
-```
-ssh root@192.168.42.1
-
-#如提示Host key verification failed：
-
-#打开当前用户目录下的 .ssh/known_hosts目录，删除192.168.42.1对应行
-
-#登录密码为milkv，提示Are you sure you want to continue connecting时输入yes回车即可
-
 ./hello-llvm
-
 ```
+
 正常情况下，终端会看到类似如下输出：
 
 ```
 «Ruyi venv-llvm-plct» debian@duos-1cae:~$ ./hello-llvm
 Hello, World!
 «Ruyi venv-llvm-plct» debian@duos-1cae:~$ 
+```
+返回上级目录并退出 ruyi LLVM 虚拟环境
+
+```
+cd ..; ruyi-deactivate
 ```

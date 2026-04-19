@@ -5,10 +5,14 @@ sys_var: v1
 
 status: basics
 last_update: 2026-04-06
+
+model: Milk-V Duo S
+profile: Coremark
 ---
 
 # RuyiSDK 基础示例
 
+可直接在开发板上进行编译和运行的示例，适合初学者快速上手。
 安装依赖包
 
 ```
@@ -18,35 +22,11 @@ sudo apt update; sudo apt install -y wget tar zstd xz-utils git build-essent
 安装ruyi包管理器
 
 ```
-wget https://mirror.iscas.ac.cn/ruyisdk/ruyi/tags/0.41.0/ruyi-0.41.0.riscv64
+wget https://fast-mirror.isrc.ac.cn/ruyisdk/ruyi/tags/0.47.0/ruyi.riscv64
 
-chmod +x ruyi-0.41.0.riscv64
+chmod +x ruyi-0.47.0.riscv64
 
-sudo cp -v ruyi-0.41.0.riscv64 /usr/local/bin/ruyi
-```
-
-安装GCC和LLVM工具链
-
-```
-ruyi update
-
-ruyi install gnu-plct llvm-plct
-```
-
-安装依赖包
-
-```
-sudo apt update; sudo apt install -y wget tar zstd xz-utils git build-essential
-```
-
-安装ruyi包管理器
-
-```
-wget https://mirror.iscas.ac.cn/ruyisdk/ruyi/tags/0.41.0/ruyi-0.41.0.riscv64
-
-chmod +x ruyi-0.41.0.riscv64
-
-sudo cp -v ruyi-0.41.0.riscv64 /usr/local/bin/ruyi
+sudo cp -v ruyi-0.47.0.riscv64 /usr/local/bin/ruyi
 ```
 
 安装GCC和LLVM工具链
@@ -62,9 +42,10 @@ ruyi install gnu-plct llvm-plct
 创建并激活 ruyi 虚拟环境（GCC）
 
 ```
-ruyi venv -t toolchain/gnu-plct milkv-duo venv-gnu-plct-duo
+ruyi venv -t toolchain/gnu-plct manual venv-gnu-plct
 
-. ~/venv-gnu-plct-duo/bin/ruyi-activate
+. ~/venv-gnu-plct/bin/ruyi-activate
+
 ```
 
 验证 GCC 版本
@@ -82,50 +63,23 @@ git clone https://github.com/eembc/coremark
 
 cd coremark
 
-make CC=riscv64-plct-linux-gnu-gcc XCFLAGS="-mcpu=thead-c906 -static" compile
+make CC=riscv64-plct-linux-gnu-gcc XCFLAGS="-mcpu=thead-c906" compile
 
-mv coremark.exe coremark-gcc
 ```
 
 正常情况下，终端会看到类似如下输出：
 
 ```
-debian@duos-1cae:~$ source venv-gnu-plct/bin/ruyi-activate
-<an@duos-1cae:~$ riscv64-plct-linux-gnu-gcc hello.c -o hello-gcc
-«Ruyi venv-gnu-plct» debian@duos-1cae:~$ ./hello-gcc
-Hello, World!
-
 «Ruyi venv-gnu-plct» debian@duos-1cae:~$ cd coremark
 <ake CC=riscv64-plct-linux-gnu-gcc XCFLAGS="-mcpu=thead-c906" compile
 riscv64-plct-linux-gnu-gcc -O2 -Ilinux -I. -DFLAGS_STR=\""-O2 -mcpu=thead-c906"\" -DITERATIONS=0 -mcpu=thead-c906 core_list_join.c core_main.c core_matrix.c core_state.c core_util.c posix/core_portme.c -o ./coremark.exe -lrt
 «Ruyi venv-gnu-plct» debian@duos-1cae:~/coremark$
 ```
 
-将 GCC 构建的二进制传输至开发板
+运行 coremark
 
 ```
-scp ../coremark-gcc root@192.168.42.1:~
-```
-
-返回上级目录并退出 ruyi GCC 虚拟环境
-
-```
-cd ..; ruyi-deactivate
-```
-
-SSH 连接到开发板并执行编译好的二进制
-
-```
-ssh root@192.168.42.1
-
-#如提示Host key verification failed：
-
-#打开当前用户目录下的 .ssh/known_hosts目录，删除192.168.42.1对应行
-
-#登录密码为milkv，提示Are you sure you want to continue connecting时输入yes回车即可
-
-./coremark-gcc
-
+./coremark.exe
 ```
 正常情况下，终端会看到类似如下输出：
 
@@ -150,15 +104,20 @@ Correct operation validated. See README.md for run and reporting rules.
 CoreMark 1.0 : 3366.153328 / GCC15.1.0 20250912 (experimental) -O2 -mcpu=thead-c906 -lrt / Heap
 «Ruyi venv-gnu-plct» debian@duos-1cae:~/coremark$
 ```
+返回上级目录并退出 ruyi LLVM 虚拟环境
+
+```
+cd ..; ruyi-deactivate
+```
 
 ## Coremark（LLVM）
 
 创建并激活 ruyi 虚拟环境（LLVM）
 
 ```
-ruyi venv -t toolchain/llvm-plct manual --sysroot-from gnu-plct venv-llvm-plct-duo
+ruyi venv -t toolchain/llvm-plct manual --sysroot-from gnu-plct venv-llvm-plct
 
-. ~/venv-llvm-plct-duo/bin/ruyi-activate
+. ~/venv-llvm-plct/bin/ruyi-activate
 ```
 
 验证 LLVM 版本
@@ -167,20 +126,12 @@ ruyi venv -t toolchain/llvm-plct manual --sysroot-from gnu-plct venv-llvm-plct-
 clang -v
 ```
 
-下载源码并编译 coremark（LLVM）
+编译 coremark（LLVM）
 
 ```
-git clone https://github.com/eembc/coremark  
-#若无法访问GitHub，使用Gitee镜像替代  
-#git clone https://gitee.com/mirrors_eembc/coremark
 
-cd coremark; make clean
-
-make CC=clang XCFLAGS="-march=rv64imafdc_xtheadba_xtheadbb_xtheadbs_xtheadcmo_\
-
-xtheadcondmov_xtheadfmemidx_xtheadmac_xtheadmemidx_xtheadmempair_xtheadsync -static" compile
-
-mv coremark.exe coremark-llvm
+cd coremark; make clean; make CC=clang XCFLAGS="-march=rv64imafdc_xtheadba_xtheadbb_xtheadbs_xtheadcmo_\
+xtheadcondmov_xtheadfmemidx_xtheadmac_xtheadmemidx_xtheadmempair_xtheadsync" compile
 ```
 
 正常情况下，终端会看到类似如下输出：
@@ -195,33 +146,12 @@ clang -O2 -Ilinux -Iposix -I. -DFLAGS_STR=\""-O2 -march=rv64imafdc_xtheadba_xthe
 «Ruyi venv-llvm-plct» debian@duos-1cae:~/coremark$ 
 ```
 
-
-将 GCC 构建的二进制传输至开发板
-
-```
-scp ../coremark-llvm root@192.168.42.1:~
-```
-
-返回上级目录并退出 ruyi LLVM 虚拟环境
+运行 coremark
 
 ```
-cd ..; ruyi-deactivate
+./coremark.exe
 ```
 
-SSH 连接到开发板并执行编译好的二进制
-
-```
-ssh root@192.168.42.1
-
-#如提示Host key verification failed：
-
-#打开当前用户目录下的 .ssh/known_hosts目录，删除192.168.42.1对应行
-
-#登录密码为milkv，提示Are you sure you want to continue connecting时输入yes回车即可
-
-./coremark-llvm
-
-```
 
 正常情况下，终端会看到类似如下输出：
 
@@ -246,4 +176,8 @@ Correct operation validated. See README.md for run and reporting rules.
 CoreMark 1.0 : 2727.396700 / RuyiSDK Clang 21.1.0 (https://github.com/ruyisdk/llvm-project 3623fe661ae35c6c80ac221f14d85be76aa870f RuyiSDK 20250915) -O2 -march=rv64imafdc_xtheadba_xtheadbb_xtheadbs_xtheadcmo_xtheadcondmov_xtheadfmemidx_xtheadmac_xtheadmemidx_xtheadmempair_xtheadsync -lrt / Heap
 «Ruyi venv-llvm-plct» debian@duos-1cae:~/coremark$
 ```
+返回上级目录并退出 ruyi LLVM 虚拟环境
 
+```
+cd ..; ruyi-deactivate
+```
