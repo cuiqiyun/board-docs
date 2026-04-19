@@ -1,6 +1,6 @@
 ---
-sys: buildroot
-sys_ver: v1.1.4
+sys: debian
+sys_ver: v1.6.35
 sys_var: v1
 
 status: basics
@@ -13,6 +13,7 @@ profile: Hello World
 # RuyiSDK 基础示例
 
 可直接在开发板上进行编译和运行的示例，适合初学者快速上手。
+
 安装依赖包
 
 ```

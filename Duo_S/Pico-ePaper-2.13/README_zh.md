@@ -1,6 +1,6 @@
 ---
-sys: buildroot
-sys_ver: v1.1.4
+sys: debian
+sys_ver: v1.6.35
 sys_var: v1
 
 status: peripheral
@@ -28,7 +28,7 @@ profile: Pico-ePaper-2.13
 
 #### 操作系统安装与启动验证
 
-确保您的开发板已准备好系统。
+确保您的开发板已刷入 Debian v1.6.35 系统。
 
 
 参考文档：https://github.com/DuoQilai/riscv-board-custom-dev/blob/main/Duo_S/boot_DuoS.md
