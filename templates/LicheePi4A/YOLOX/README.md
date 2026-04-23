@@ -2,10 +2,11 @@
 | :--- | :--- |
 | sys_var | - |
 | provider | RevyOS |
-| status |  已验证 |
+| status | ✅ 已验证 |
 | last_update | 2026-04-22 |
 | model | Lichee Pi 4A |
 | profile | YOLOX |
+
 一、RuyiSDK示例
 Ruyi环境搭建
 更新ruyi软件包列表并安装编译工具链
@@ -22,7 +23,7 @@ YOLOX 是一个高性能的目标检测模型，本示例在 Lichee Pi 4A 上运
 软件环境：RuyiSDK：0.47.0   Python：3.11.4 
 
 创建并激活ruyi虚拟环境
-创建虚拟环境，命名为 yolox-venv，使用 sipeed-lpi4a profile
+创建虚拟环境，命名为 yolox-venv，使用 sipeed-lpi4a profile。
 ruyi venv -t gnu-plct-xthead sipeed-lpi4a yolox-venv
 
 进入虚拟环境目录
