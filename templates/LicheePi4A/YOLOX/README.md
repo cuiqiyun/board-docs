@@ -52,7 +52,7 @@ YOLOX 是一个高性能的目标检测模型，本示例在 Lichee Pi 4A 上运
 
 
 
-###**创建并激活ruyi虚拟环境**
+### **创建并激活ruyi虚拟环境**
 
 创建虚拟环境，命名为 yolox-venv，使用 sipeed-lpi4a profile。  
 
