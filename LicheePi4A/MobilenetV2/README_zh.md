@@ -49,9 +49,9 @@ info: skipping already installed package gnu-plct-xthead-3.1.0-ruyi.20250526
 
 ## **MobilenetV2测试示例**
 ### **示例描述和硬件环境准备**
-本教程是一个如何在 LicheePi4A 平台上部署 mobilenetv2 模型完成图像分类的示例。
-硬件环境：Lichee Pi 4A (16GB)  
-软件环境：RuyiSDK：0.47.0  HHB：2.6.17
+本教程是一个如何在 LicheePi4A 平台上部署 mobilenetv2 模型完成图像分类的示例。  
+硬件环境：Lichee Pi 4A (16GB)    
+软件环境：RuyiSDK：0.47.0  HHB：2.6.17  
 ### **环境配置**
 首先获取本节教程的模型
 ```bash
