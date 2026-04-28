@@ -1,18 +1,14 @@
-| sys\_ver | RevyOS 20250110 |
+---
+sys: revyos
+sys_ver: "20250110"
+sys_var: null
 
-| :--- | :--- |
+status: AI
+last_update: 2026-04-27
 
-| sys\_var | - |
-
-| provider | RevyOS |
-
-| status | AI |
-
-| last\_update | 2026-04-27|
-
-| model | Lichee Pi 4A |
-
-| profile | MobilenetV2 |
+model: Lichee Pi 4A
+profile: MobilenetV2
+---
 
 
 
